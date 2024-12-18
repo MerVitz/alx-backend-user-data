@@ -9,7 +9,7 @@ class Auth:
     """ Authentication class to manage authentication for the API """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """ Returns True if the path needs authentication, False if excluded """
+        """ Returns True if the path needs ded """
         # If path is None or excluded_paths is None or empty, return True
         # (requires auth)
         if path is None or excluded_paths is None or len(excluded_paths) == 0:
