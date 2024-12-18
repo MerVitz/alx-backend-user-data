@@ -6,33 +6,18 @@ from typing import List, TypeVar
 
 
 class Auth:
-    """ Auth class to manage authentication for the API """
+    """ Authentication class to manage authentication for the API """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """ Returns True if path is not in excluded_paths """
-
-        # Return True if path is None
-        if path is None:
+        """ Returns True if the path needs authentication, False if excluded """
+        # If path is None or excluded_paths is None or empty, return True (requires auth)
+        if path is None or excluded_paths is None or len(excluded_paths) == 0:
             return True
-
-        # Return True if excluded_paths is None or empty
-        if excluded_paths is None or len(excluded_paths) == 0:
-            return True
-
-        # Normalize the path to be slash-tolerant
-        normalized_path = path if path.endswith('/') else path + '/'
-
-        for excluded_path in excluded_paths:
-            # Normalize excluded paths to be slash-tolerant
-            normalized_excluded_path = excluded_path if excluded_path.endswith(
-                '/') else excluded_path + '/'
-
-            # If path is in excluded_paths, return False
-            if normalized_path == normalized_excluded_path:
-                return False
-
-        # If path is not in excluded_paths, return True
-        return True
+        # Strip trailing slashes for path and excluded paths
+        path = path.rstrip('/')
+        excluded_paths = [ep.rstrip('/') for ep in excluded_paths]
+        # Return True if path is not in excluded_paths, meaning authentication is required
+        return path not in excluded_paths
 
     def authorization_header(self, request=None) -> str:
         """ Returns the Authorization header value if it exists, else None """

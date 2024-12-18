@@ -24,14 +24,18 @@ def before_request():
     """ Handle requests before processing """
     if auth is None:
         return None
-    # Define routes that don’t require authentication
+
+    # List of routes that don't need authentication
     excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
-    # If the current path requires authentication
-    if request.path not in excluded_paths:
-        # Check for valid authorization header
+
+    # If the current path is in the excluded paths, bypass auth
+    if request.path in excluded_paths:
+        return None
+
+    # Check if the route requires authentication
+    if auth.require_auth(request.path, excluded_paths):
         if auth.authorization_header(request) is None:
             abort(401)  # Unauthorized
-        # Check if user is authenticated (current_user)
         if auth.current_user(request) is None:
             abort(403)  # Forbidden
 
