@@ -20,7 +20,7 @@ class BasicAuth:
 
     def extract_base64_authorization_header(
             self, authorization_header: str
-            ) -> str:
+    ) -> str:
         """
         Extracts the Base64 part of the authorization header for Basic Auth.
 
@@ -53,8 +53,8 @@ class BasicAuth:
             return None
         try:
             decoded = base64.b64decode(
-                    base64_authorization_header
-                    ).decode('utf-8')
+                base64_authorization_header
+            ).decode('utf-8')
             return decoded
         except Exception:
             return None
@@ -79,7 +79,7 @@ class BasicAuth:
 
     def user_object_from_credentials(
             self, user_email: str, user_pwd: str
-            ) -> TypeVar('User'):
+    ) -> TypeVar('User'):
         """
         Retrieves the User instance based on email and password.
         Args:
@@ -104,14 +104,15 @@ class BasicAuth:
 
         return user
 
-
     def current_user(self, request=None) -> TypeVar('User'):
         """
         Retrieves the current user from the request's Authorization header.
         Args:
-            request: The HTTP request object containing the Authorization header.
+            request: The HTTP request object
+            containing the Authorization header.
         Returns:
-            User: The authenticated user instance, or None if authentication fails.
+            User: The authenticated user instance,
+            or None if authentication fails.
         """
         if request is None:
             return None
@@ -137,4 +138,3 @@ class BasicAuth:
 
         # Retrieve the user object using the extracted credentials
         return self.user_object_from_credentials(user_email, user_pwd)
-
