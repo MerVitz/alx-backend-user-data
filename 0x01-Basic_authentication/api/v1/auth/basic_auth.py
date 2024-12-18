@@ -18,7 +18,9 @@ class BasicAuth:
     validate them, and retrieve the associated User instance.
     """
 
-    def extract_base64_authorization_header(self, authorization_header: str) -> str:
+    def extract_base64_authorization_header(
+            self, authorization_header: str
+            ) -> str:
         """
         Extracts the Base64 part of the authorization header for Basic Auth.
 
@@ -50,7 +52,9 @@ class BasicAuth:
         if not isinstance(base64_authorization_header, str):
             return None
         try:
-            decoded = base64.b64decode(base64_authorization_header).decode('utf-8')
+            decoded = base64.b64decode(
+                    base64_authorization_header
+                    ).decode('utf-8')
             return decoded
         except Exception:
             return None
@@ -105,10 +109,12 @@ class BasicAuth:
         Retrieves the current user from the request's Authorization header.
 
         Args:
-            request: The HTTP request object containing the Authorization header.
+            request: The HTTP request object
+            containing the Authorization header.
 
         Returns:
-            User: The authenticated user instance, or None if authentication fails.
+            User: The authenticated user instance
+            ,or None if authentication fails.
         """
         if request is None:
             return None
