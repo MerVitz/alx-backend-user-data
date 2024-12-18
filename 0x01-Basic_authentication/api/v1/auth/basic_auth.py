@@ -78,43 +78,40 @@ class BasicAuth:
         return tuple(decoded_base64_authorization_header.split(":", 1))
 
     def user_object_from_credentials(
-        self, user_email: str, user_pwd: str
-    ) -> TypeVar('User'):
+            self, user_email: str, user_pwd: str
+            ) -> TypeVar('User'):
         """
         Retrieves the User instance based on email and password.
-
         Args:
             user_email (str): The email of the user.
             user_pwd (str): The password of the user.
-
         Returns:
             User: The user instance if credentials are valid, or None.
         """
+        # Validate inputs
         if not isinstance(user_email, str) or not isinstance(user_pwd, str):
             return None
 
-        # Search for the user using the class method `search` from User
+        # Search for the user using the email
         users = User.search({"email": user_email})
-        if not users or len(users) == 0:
+        if not users or len(users) == 0:  # No users found
             return None
 
-        user = users[0]  # Assuming search returns a list of matching users
-        if not user.is_valid_password(user_pwd):
+        # Check the first user (assuming only one match for the email)
+        user = users[0]
+        if not user.is_valid_password(user_pwd):  # Password does not match
             return None
 
         return user
 
+
     def current_user(self, request=None) -> TypeVar('User'):
         """
         Retrieves the current user from the request's Authorization header.
-
         Args:
-            request: The HTTP request object
-            containing the Authorization header.
-
+            request: The HTTP request object containing the Authorization header.
         Returns:
-            User: The authenticated user instance
-            ,or None if authentication fails.
+            User: The authenticated user instance, or None if authentication fails.
         """
         if request is None:
             return None
@@ -140,3 +137,4 @@ class BasicAuth:
 
         # Retrieve the user object using the extracted credentials
         return self.user_object_from_credentials(user_email, user_pwd)
+
