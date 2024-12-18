@@ -24,7 +24,6 @@ class Auth:
 
         # Strip trailing slashes from path
         path = path.rstrip('/')
-        
         # Check against all excluded paths
         for excluded_path in excluded_paths:
             # Remove trailing slashes and support wildcards
