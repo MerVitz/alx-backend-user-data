@@ -50,9 +50,8 @@ def before_request():
         '/api/v1/users/me'
     ]
 
-    # If the current path is in the excluded paths, bypass auth
-    if request.path in excluded_paths:
-        return None
+    # Always assign request.current_user
+    request.current_user = auth.current_user(request)
 
     # Check if the route requires authentication
     if auth.require_auth(request.path, excluded_paths):
