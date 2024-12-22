@@ -18,6 +18,25 @@ class BasicAuth:
     validate them, and retrieve the associated User instance.
     """
 
+    def require_auth(self, path: str, excluded_paths: list) -> bool:
+        """
+        Determine if authentication is required for a given path.
+        :param path: The requested path.
+        :param excluded_paths: List of paths that don't require authentication.
+        :return: True if authentication is required, False otherwise.
+        """
+        if path is None or excluded_paths is None or not excluded_paths:
+            return True
+        # Normalize paths
+        path = path.rstrip('/')
+        for excluded_path in excluded_paths:
+            if excluded_path.endswith('*'):  # wildcard matching
+                if path.startswith(excluded_path[:-1]):
+                    return False
+            if path == excluded_path.rstrip('/'):
+                return False
+        return True
+
     def extract_base64_authorization_header(
             self, authorization_header: str
     ) -> str:
