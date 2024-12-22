@@ -34,34 +34,18 @@ else:
 
 @app.before_request
 def before_request():
-    """
-    This function is executed before each request. It handles authentication
-    by checking if the request requires it and aborts with the appropriate
-    error code if necessary.
-    """
+    """Filter each request with authentication"""
     if auth is None:
-        return None
-
-    # List of routes that don't need authentication
-    excluded_paths = [
-        '/api/v1/status/',
-        '/api/v1/unauthorized/',
-        '/api/v1/forbidden/',
-        '/api/v1/users/me'
-    ]
-
-    # Always assign request.current_user
+        return
+    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/', '/api/v1/auth_session/login/']
+    if not auth.require_auth(request.path, excluded_paths):
+        return
+    if auth.authorization_header(request) is None:
+        abort(401)
     request.current_user = auth.current_user(request)
-
-    # Check if the route requires authentication
-    if auth.require_auth(request.path, excluded_paths):
-        if auth.authorization_header(request) is None and (
-                auth.session_cookie(request)
-                ) is None:
-            abort(401)  # Unauthorized
-        request.current_user = auth.current_user(request)
-        if request.current_user is None:
-            abort(403)  # Forbidden
+    if request.current_user is None:
+        abort(403)
 
 
 @app.errorhandler(404)

@@ -31,7 +31,7 @@ def view_authenticated_user() -> str:
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def view_one_user(user_id: str = None) -> str:
-    """ GET /api/v1/users/:id
+    """GET /api/v1/users/:id
     Path parameter:
       - User ID or "me"
     Return:
