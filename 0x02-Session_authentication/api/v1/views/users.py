@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 
 """ Module of Users views
 """
 from api.v1.views import app_views
@@ -22,7 +22,7 @@ def view_authenticated_user() -> str:
     GET /api/v1/users/me
     Return:
       - Authenticated User object JSON represented
-      - 401 if not authenticated
+      - 404 if not authenticated
     """
     if not request.current_user:
         abort(404)  # No authenticated user
@@ -81,11 +81,10 @@ def create_user() -> str:
       - User object JSON represented
       - 400 if can't create the new User
     """
-    rj = None
     error_msg = None
     try:
         rj = request.get_json()
-    except Exception as e:
+    except Exception:
         rj = None
     if rj is None:
         error_msg = "Wrong format"
@@ -103,7 +102,7 @@ def create_user() -> str:
             user.save()
             return jsonify(user.to_json()), 201
         except Exception as e:
-            error_msg = "Can't create User: {}".format(e)
+            error_msg = f"Can't create User: {e}"
     return jsonify({'error': error_msg}), 400
 
 
@@ -125,10 +124,9 @@ def update_user(user_id: str = None) -> str:
     user = User.get(user_id)
     if user is None:
         abort(404)
-    rj = None
     try:
         rj = request.get_json()
-    except Exception as e:
+    except Exception:
         rj = None
     if rj is None:
         return jsonify({'error': "Wrong format"}), 400
