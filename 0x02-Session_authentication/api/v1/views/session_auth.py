@@ -26,22 +26,39 @@ def session_auth_login():
         return jsonify({"error": "password missing"}), 400
 
     # Retrieve user by email
-    users = User.search({"email": email})
+    try:
+        users = User.search({"email": email})
+    except Exception as e:
+        print(f"Error in User search: {e}")
+        return jsonify({"error": "internal server error"}), 500
+
     if not users or len(users) == 0:
         return jsonify({"error": "no user found for this email"}), 404
 
     user = users[0]
 
     # Validate password
-    if not user.is_valid_password(password):
-        return jsonify({"error": "wrong password"}), 401
+    try:
+        if not user.is_valid_password(password):
+            return jsonify({"error": "wrong password"}), 401
+    except Exception as e:
+        print(f"Error validating password: {e}")
+        return jsonify({"error": "internal server error"}), 500
 
     # Create a session ID for the user
-    from api.v1.app import auth
-    session_id = auth.create_session(user.id)
+    try:
+        from api.v1.app import auth
+        session_id = auth.create_session(user.id)
+    except Exception as e:
+        print(f"Error creating session: {e}")
+        return jsonify({"error": "internal server error"}), 500
 
     # Set the session ID in the response cookie
     session_name = os.getenv('SESSION_NAME')
+    if not session_name:
+        print("SESSION_NAME environment variable is not set.")
+        return jsonify({"error": "server configuration error"}), 500
+
     response = jsonify(user.to_json())
     response.set_cookie(session_name, session_id)
 
