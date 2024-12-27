@@ -22,6 +22,7 @@ class SessionAuth(Auth):
         if session_id is None or not isinstance(session_id, str):
             return None
 
+        # Use dictionary's get method to fetch User ID
         return self.user_id_by_session_id.get(session_id)
 
     def destroy_session(self, session_id: str = None) -> bool:
