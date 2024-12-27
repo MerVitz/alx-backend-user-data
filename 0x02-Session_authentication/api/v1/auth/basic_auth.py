@@ -18,6 +18,20 @@ class BasicAuth:
     validate them, and retrieve the associated User instance.
     """
 
+    def authorization_header(self, request=None) -> str:
+        """
+        Retrieves the Authorization header from the request.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            str: The Authorization header value, or None if not present.
+        """
+        if request is None:
+            return None
+        return request.headers.get("Authorization")
+
     def require_auth(self, path: str, excluded_paths: list) -> bool:
         """
         Determine if authentication is required for a given path.
