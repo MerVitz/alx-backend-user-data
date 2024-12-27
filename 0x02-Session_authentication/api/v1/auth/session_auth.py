@@ -2,6 +2,7 @@
 """ Authentication class for managing sessions"""
 import uuid
 from api.v1.auth.auth import Auth
+from models.user import User  # Import User model to fetch user data
 
 
 class SessionAuth(Auth):
@@ -35,3 +36,23 @@ class SessionAuth(Auth):
             return True
 
         return False
+
+    def current_user(self, request=None):
+        """
+        Retrieves a User instance based on a session cookie value.
+        """
+        if request is None:
+            return None
+
+        # Retrieve the session ID from the request
+        session_id = self.session_cookie(request)
+        if session_id is None:
+            return None
+
+        # Retrieve the user ID from the session ID
+        user_id = self.user_id_for_session_id(session_id)
+        if user_id is None:
+            return None
+
+        # Retrieve and return the User instance
+        return User.get(user_id)
