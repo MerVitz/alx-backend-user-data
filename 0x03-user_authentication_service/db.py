@@ -19,7 +19,7 @@ class DB:
         self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
-        self.__session = None  # Use a private attribute for the session instance
+        self.__session = None
 
     @property
     def _session(self) -> Session:
