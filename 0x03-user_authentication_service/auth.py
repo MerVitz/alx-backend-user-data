@@ -26,6 +26,16 @@ def _hash_password(password: str) -> bytes:
     return hashed_password
 
 
+def _generate_uuid() -> str:
+    """
+    Generate a new UUID string.
+
+    Returns:
+        str: A string representation of a new UUID.
+    """
+    return str(uuid.uuid4())
+
+
 class Auth:
     """Auth class to interact with the authentication database."""
 
@@ -81,15 +91,6 @@ class Auth:
         except Exception:
             # Return False if any error occurs (user not found, etc.)
             return False
-
-    def _generate_uuid() -> str:
-        """
-        Generate a new UUID string.
-
-        Returns:
-            str: A string representation of a new UUID.
-        """
-        return str(uuid.uuid4())
 
     def create_session(self, email: str) -> str:
         """
