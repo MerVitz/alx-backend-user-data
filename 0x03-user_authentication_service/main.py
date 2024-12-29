@@ -15,7 +15,10 @@ def register_user(email: str, password: str) -> None:
         data={
             "email": email,
             "password": password})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got
+    {
+        response.status_code
+        }"
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
@@ -24,7 +27,9 @@ def log_in_wrong_password(email: str, password: str) -> None:
         data={
             "email": email,
             "password": password})
-    assert response.status_code == 401, f"Expected 401 but got {response.status_code}"
+    assert response.status_code == 401, f"Expected 401 but got{
+        response.status_code
+        }"
 
 
 def log_in(email: str, password: str) -> str:
@@ -33,13 +38,19 @@ def log_in(email: str, password: str) -> str:
         data={
             "email": email,
             "password": password})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got
+    {
+        response.status_code
+        }"
     return response.cookies["session_id"]
 
 
 def profile_unlogged() -> None:
     response = requests.get(f"{BASE_URL}/profile")
-    assert response.status_code == 403, f"Expected 403 but got {response.status_code}"
+    assert response.status_code == 403, f"Expected 403 but got
+    {
+        response.status_code
+        }"
 
 
 def profile_logged(session_id: str) -> None:
@@ -47,7 +58,9 @@ def profile_logged(session_id: str) -> None:
         f"{BASE_URL}/profile",
         cookies={
             "session_id": session_id})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got{
+        response.status_code
+        }"
 
 
 def log_out(session_id: str) -> None:
@@ -55,7 +68,9 @@ def log_out(session_id: str) -> None:
         f"{BASE_URL}/sessions",
         cookies={
             "session_id": session_id})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got{
+        response.status_code
+        }"
 
 
 def reset_password_token(email: str) -> str:
@@ -63,7 +78,9 @@ def reset_password_token(email: str) -> str:
         f"{BASE_URL}/reset_password",
         data={
             "email": email})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got{
+        response.status_code
+        }"
     return response.json()["reset_token"]
 
 
@@ -74,7 +91,9 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
             "email": email,
             "reset_token": reset_token,
             "new_password": new_password})
-    assert response.status_code == 200, f"Expected 200 but got {response.status_code}"
+    assert response.status_code == 200, f"Expected 200 but got{
+        response.status_code
+        }"
 
 
 if __name__ == "__main__":
