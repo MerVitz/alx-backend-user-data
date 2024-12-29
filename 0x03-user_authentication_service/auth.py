@@ -170,7 +170,7 @@ class Auth:
         reset_token = str(uuid.uuid4())
         # Update the user's reset_token field
         user.reset_token = reset_token
-        # Save the updated user object with the new reset_token
+        # Save the updated user object to persist the new reset_token
         self._db.save(user)
         return reset_token
 
