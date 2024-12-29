@@ -77,7 +77,9 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             # Check the password against the stored hashed password
-            return bcrypt.checkpw(password.encode('utf-8'), user.hashed_password.encode('utf-8'))
+            return bcrypt.checkpw(
+                password.encode('utf-8'),
+                user.hashed_password.encode('utf-8'))
         except Exception:
             # Return False if any error occurs (user not found, etc.)
             return False
