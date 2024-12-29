@@ -163,12 +163,15 @@ class Auth:
             ValueError: If no user with the provided email exists.
         """
         # Find the user corresponding to the email
-        user = self.get_user_by_email(email)
+        user = self._db.find_user_by(email=email)
         if user is None:
             raise ValueError("User DNE")
+        # Generate a reset token (UUID)
         reset_token = str(uuid.uuid4())
+        # Update the user's reset_token field
         user.reset_token = reset_token
-        self.save(user)
+        # Save the updated user object with the new reset_token
+        self._db.save(user)
         return reset_token
 
     def update_password(self, reset_token: str, new_password: str) -> None:
