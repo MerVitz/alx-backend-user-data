@@ -3,7 +3,7 @@
 Flask app to handle user registration and login.
 """
 
-from flask import Flask, request, jsonify, abort, make_response,redirect
+from flask import Flask, request, jsonify, abort, make_response, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -74,6 +74,7 @@ def login():
     response.set_cookie("session_id", session_id)
     return response
 
+
 @app.route("/sessions", methods=["DELETE"])
 def logout():
     """
@@ -87,19 +88,20 @@ def logout():
         - Responds with 403 if the session ID is invalid.
     """
     session_id = request.cookies.get("session_id")
-    
+
     if not session_id:
         abort(403)
 
     # Find the user associated with the session_id
     user = AUTH.get_user_from_session_id(session_id)
-    
+
     if user is None:
         abort(403)
-    
+
     # Destroy the session and redirect to "/"
     AUTH.destroy_session(user.id)
     return redirect("/")
+
 
 @app.route("/profile", methods=["GET"])
 def profile():
@@ -124,6 +126,7 @@ def profile():
         return jsonify({"message": "Forbidden"}), 403  # Invalid session ID
 
     return jsonify({"email": user.email})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")

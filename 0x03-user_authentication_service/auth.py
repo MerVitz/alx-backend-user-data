@@ -122,7 +122,7 @@ class Auth:
             session_id (str): The session ID of the user.
 
         Returns:
-            User: The User object corresponding to the session ID, or None if not found.
+            User: The User object corresponding found.
         """
         if session_id is None:
             return None
