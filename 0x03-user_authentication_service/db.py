@@ -66,11 +66,10 @@ class DB:
         if invalid_columns:
             raise InvalidRequestError(f"Invalid columns: {', '.join(invalid_columns)}")
 
-        try:
-            # Query the user with the provided filters
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound  # No result found, raise NoResultFound
-            return user
-        except InvalidRequestError:
-            raise InvalidRequestError("Invalid query arguments.")
+        # Query the user with the provided filters
+        user = self._session.query(User).filter_by(**kwargs).first()
+        
+        if user is None:
+            raise NoResultFound("No user found matching the criteria.")
+
+        return user
