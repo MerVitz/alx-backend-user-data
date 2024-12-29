@@ -148,7 +148,6 @@ class Auth:
             self._db.update_user(user_id, session_id=None)
         except Exception:
             pass
-<<<<<<< HEAD
 
     def get_reset_password_token(self, email: str) -> str:
         """
@@ -203,5 +202,3 @@ class Auth:
         user.reset_token = None
         self.save(user)
     
-=======
->>>>>>> e74cf3821f7e4620af3a38d627b26abb12c5c4df
