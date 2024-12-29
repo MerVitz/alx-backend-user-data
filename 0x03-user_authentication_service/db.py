@@ -79,7 +79,7 @@ class DB:
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """
-        Updates the user's attributes based on the provided user_id and keyword arguments.
+        Updates attr based on the provided user_id and keyword arguments.
 
         Args:
             user_id (int): The ID of the user to be updated.
