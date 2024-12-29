@@ -154,7 +154,6 @@ def reset_password():
         # Respond with 403 if the email is invalid or not found
         return jsonify({"message": "Forbidden"}), 403
 
-
 @app.route("/reset_password", methods=["PUT"])
 def update_password_endpoint():
     """
@@ -166,19 +165,23 @@ def update_password_endpoint():
         - new_password: str (form data)
 
     Returns:
-        JSON response confirming the update or a 403.
+        JSON response confirming the update or a 403 if the token is invalid.
     """
+    # Retrieve form data
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
 
+    # Check for missing fields
     if not email or not reset_token or not new_password:
         return jsonify({"message": "Missing fields"}), 400
 
     try:
+        # Call the `update_password` method to update the password
         AUTH.update_password(reset_token, new_password)
         return jsonify({"email": email, "message": "Password updated"}), 200
     except ValueError:
+        # If the token is invalid, respond with a 403
         return jsonify({"message": "Forbidden"}), 403
 
 
