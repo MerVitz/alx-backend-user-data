@@ -7,6 +7,7 @@ import uuid
 from db import DB
 from user import User
 from sqlalchemy.exc import InvalidRequestError
+from werkzeug.security import generate_password_hash
 
 
 def _hash_password(password: str) -> bytes:
@@ -147,3 +148,57 @@ class Auth:
             self._db.update_user(user_id, session_id=None)
         except Exception:
             pass
+
+    def get_reset_password_token(self, email: str) -> str:
+        """
+        Generate a reset token for the user corresponding to the email.
+        
+        Args:
+            email (str): The email of the user requesting a password reset.
+        
+        Returns:
+            str: A reset token for the user.
+        
+        Raises:
+            ValueError: If no user with the provided email exists.
+        """
+        # Find the user corresponding to the email
+        user = self.get_user_by_email(email)
+        
+        if user is None:
+            raise ValueError("User not found")
+
+        # Generate a reset token (UUID)
+        reset_token = str(uuid.uuid4())
+
+        # Update the user's reset_token field
+        user.reset_token = reset_token
+        self.save(user)
+
+        return reset_token
+
+    def update_password(self, reset_token: str, new_password: str) -> None:
+        """
+        Update the password for the user identified by the reset token.
+        
+        Args:
+            reset_token (str): The reset token identifying the user.
+            new_password (str): The new password to set for the user.
+        
+        Raises:
+            ValueError: If the reset token is invalid or expired.
+        """
+        # Find user by reset_token
+        user = self.get_user_by_reset_token(reset_token)
+        
+        if user is None:
+            raise ValueError("Invalid reset token")
+        
+        # Hash the new password
+        hashed_password = generate_password_hash(new_password)
+
+        # Update the user's password and reset_token field
+        user.hashed_password = hashed_password
+        user.reset_token = None
+        self.save(user)
+    
