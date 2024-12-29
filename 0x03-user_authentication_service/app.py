@@ -101,6 +101,29 @@ def logout():
     AUTH.destroy_session(user.id)
     return redirect("/")
 
+@app.route("/profile", methods=["GET"])
+def profile():
+    """
+    Retrieve the user's profile.
+
+    Expects:
+        - session_id: Cookie containing the session ID.
+
+    Returns:
+        JSON response with user email if the session ID is valid.
+        Returns 403 status if the session is invalid or not found.
+    """
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        return jsonify({"message": "Forbidden"}), 403  # No session ID provided
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        return jsonify({"message": "Forbidden"}), 403  # Invalid session ID
+
+    return jsonify({"email": user.email})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
