@@ -59,10 +59,18 @@ class DB:
             NoResultFound: If no user matches the filter criteria.
             InvalidRequestError: If invalid filter criteria are provided.
         """
+        # Check if all the keys in kwargs are valid User columns
+        valid_columns = {column.name for column in User.__table__.columns}  # Get all valid column names of the User model
+        invalid_columns = [key for key in kwargs if key not in valid_columns]  # Find invalid columns
+
+        if invalid_columns:
+            raise InvalidRequestError(f"Invalid columns: {', '.join(invalid_columns)}")
+
         try:
+            # Query the user with the provided filters
             user = self._session.query(User).filter_by(**kwargs).first()
-            if not user:
-                raise NoResultFound
+            if user is None:
+                raise NoResultFound  # No result found, raise NoResultFound
             return user
         except InvalidRequestError:
             raise InvalidRequestError("Invalid query arguments.")
