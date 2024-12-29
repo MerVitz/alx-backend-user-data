@@ -142,12 +142,16 @@ def reset_password():
     email = request.form.get("email")
 
     if not email:
-        return jsonify({"message": "Email required"}), 400
+        # Respond with 403 if the email is not provided
+        return jsonify({"message": "Forbidden"}), 403
 
     try:
+        # Generate the reset password token
         reset_token = AUTH.get_reset_password_token(email)
+        # Return the token and email in a 200 response
         return jsonify({"email": email, "reset_token": reset_token}), 200
     except ValueError:
+        # Respond with 403 if the email is invalid or not found
         return jsonify({"message": "Forbidden"}), 403
 
 
