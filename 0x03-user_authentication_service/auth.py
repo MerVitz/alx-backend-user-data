@@ -168,7 +168,7 @@ class Auth:
         except Exception:
             # Raise ValueError with exact message for non-existing user
             raise ValueError("User DNE")
-        
+
         # Generate a UUID as the reset token
         reset_token = str(uuid.uuid4())
 
@@ -206,4 +206,4 @@ class Auth:
             user.id,
             hashed_password=hashed_password,
             reset_token=None
-            )
+        )

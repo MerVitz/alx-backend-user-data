@@ -154,6 +154,7 @@ def reset_password():
         # Respond with 403 if the email is invalid or not found
         return jsonify({"message": "Forbidden"}), 403
 
+
 @app.route("/reset_password", methods=["PUT"])
 def update_password_endpoint():
     """
