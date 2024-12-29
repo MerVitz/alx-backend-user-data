@@ -178,27 +178,32 @@ class Auth:
         # Return the reset token
         return reset_token
 
-    def update_password(self, reset_token: str, new_password: str) -> None:
-        """
-        Update the password for the user identified by the reset token.
+def update_password(self, reset_token: str, new_password: str) -> None:
+    """
+    Update the password for the user identified by the reset token.
 
-        Args:
-            reset_token (str): The reset token identifying the user.
-            new_password (str): The new password to set for the user.
+    Args:
+        reset_token (str): The reset token identifying the user.
+        new_password (str): The new password to set for the user.
 
-        Raises:
-            ValueError: If the reset token is invalid or expired.
-        """
-        # Find user by reset_token
-        user = self.get_user_by_reset_token(reset_token)
+    Raises:
+        ValueError: If the reset token is invalid.
+    """
+    try:
+        # Find user by reset token
+        user = self._db.find_user_by(reset_token=reset_token)
+    except InvalidRequestError:
+        raise ValueError("Invalid reset token")
 
-        if user is None:
-            raise ValueError("Invalid reset token")
+    if user is None:
+        raise ValueError("Invalid reset token")
 
-        # Hash the new password
-        hashed_password = generate_password_hash(new_password)
+    # Hash the new password
+    hashed_password = _hash_password(new_password)
 
-        # Update the user's password and reset_token field
-        user.hashed_password = hashed_password
-        user.reset_token = None
-        self.save(user)
+    # Update user's hashed_password and reset_token fields
+    self._db.update_user(
+        user.id,
+        hashed_password=hashed_password.decode('utf-8'),
+        reset_token=None
+        )
