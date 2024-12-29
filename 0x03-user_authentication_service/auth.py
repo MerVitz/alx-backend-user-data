@@ -3,6 +3,7 @@
 Auth class to handle user authentication and registration
 """
 import bcrypt
+import uuid
 from db import DB
 from user import User
 from sqlalchemy.exc import InvalidRequestError
@@ -61,3 +62,51 @@ class Auth:
         # Ensure the password is stored as a string
         user = self._db.add_user(email, hashed_password.decode('utf-8'))
         return user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validate if the provided email and password match a user.
+
+        Args:
+            email (str): The email address of the user.
+            password (str): The password to validate.
+
+        Returns:
+            bool: True if valid login, False otherwise.
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            # Check the password against the stored hashed password
+            return bcrypt.checkpw(password.encode('utf-8'), user.hashed_password.encode('utf-8'))
+        except Exception:
+            # Return False if any error occurs (user not found, etc.)
+            return False
+
+    def _generate_uuid() -> str:
+        """
+        Generate a new UUID string.
+
+        Returns:
+            str: A string representation of a new UUID.
+        """
+        return str(uuid.uuid4())
+
+    def create_session(self, email: str) -> str:
+        """
+        Create a new session for the user with the provided email.
+
+        Args:
+            email (str): The email of the user.
+
+        Returns:
+            str: The new session ID, or None if the user is not found.
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            # Generate a new session ID
+            session_id = _generate_uuid()
+            # Update the user's session_id in the database
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except Exception:
+            return None
