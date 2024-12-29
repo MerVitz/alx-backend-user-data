@@ -113,3 +113,37 @@ class Auth:
             return session_id
         except Exception:
             return None
+
+    def get_user_from_session_id(self, session_id: str):
+        """
+        Find a user by their session ID.
+
+        Args:
+            session_id (str): The session ID of the user.
+
+        Returns:
+            User: The User object corresponding to the session ID, or None if not found.
+        """
+        if session_id is None:
+            return None
+
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except Exception:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Destroy the session of a user by setting their session ID to None.
+
+        Args:
+            user_id (int): The ID of the user.
+
+        Returns:
+            None
+        """
+        try:
+            self._db.update_user(user_id, session_id=None)
+        except Exception:
+            pass
