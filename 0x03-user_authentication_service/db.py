@@ -19,15 +19,15 @@ class DB:
         self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
-        self.__session = None
+        self.__session = None  # Use a private attribute for the session instance
 
     @property
     def _session(self) -> Session:
         """Memoized session object."""
-        if self.__session is None:
+        if self.__session is None:  # Access the private __session attribute
             DBSession = sessionmaker(bind=self._engine)
             self.__session = DBSession()
-        return self._session
+        return self.__session  # Return the private __session attribute
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """
@@ -66,21 +66,3 @@ class DB:
             return user
         except InvalidRequestError:
             raise InvalidRequestError("Invalid query arguments.")
-
-    def update_user(self, user_id: int, **kwargs) -> None:
-        """
-        Updates a user's attributes and commits the changes.
-
-        Args:
-            user_id (int): The ID of the user to update.
-            **kwargs: Arbitrary keyword arguments representing the attributes to update.
-
-        Raises:
-            ValueError: If a keyword does not match any user attribute.
-        """
-        user = self.find_user_by(id=user_id)
-        for key, value in kwargs.items():
-            if not hasattr(user, key):
-                raise ValueError(f"User has no attribute '{key}'")
-            setattr(user, key, value)
-        self._session.commit()
